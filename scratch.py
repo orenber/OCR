@@ -16,7 +16,6 @@ ax_text = plt.subplot(2, 2, 2)
 ax_crop = plt.subplot(2, 2, 3)
 ax_reference = plt.subplot(2, 2, 4)
 # set axes propertise
-ax_image.set_position()
 ax_image.axis('off')
 ax_text.axis('off')
 text_in_axes = ax_text.text(0, 0, '', style='italic', fontsize=10,
@@ -55,6 +54,7 @@ answer = list()
 test_score_list = list()
 number_rows = len(image_props_sort)
 text = ''
+dictionary_images = Ut.load('dictionary_images')
 # loop on every row
 for row in range(number_rows):
     number_columns = len(image_props_sort[row])
@@ -86,7 +86,7 @@ for row in range(number_rows):
         # load dictionary
         #  dictionary_images = {'k':[image_ocr]}
         #  Ut.save('dictionary_images',dictionary_images)
-        dictionary_images = Ut.load('dictionary_images')
+
 
         # if the dictionary is empty create new one
         latter_list = list(dictionary_images.keys())
