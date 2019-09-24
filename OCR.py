@@ -3,7 +3,6 @@ import numpy as np
 from skimage.transform import resize
 import Utilities as Ut
 import math
-from typing import List, Dict
 
 
 class SmartOCR:
@@ -83,10 +82,10 @@ class CorrelationsOCR(object):
                 correlation_dictionary[latter].append(cor_value)
 
             score_list = correlation_dictionary[latter]
-            correlation_score[latter] = np.max(score_list)
+            correlation_score[latter] = np.nanmax(score_list)
 
         # the key with the higiest score it is the most sutable label
-        higiest_score = np.max(list(correlation_score.values()))
+        higiest_score = np.nanmax(list(correlation_score.values()))
         selected_label = [latter for latter, score in correlation_score.items() if score == higiest_score]
 
         return selected_label[0]
@@ -94,7 +93,7 @@ class CorrelationsOCR(object):
     def convert_text_image_to_text(self, image_text: np.array)->str:
 
         # convert to binary text image
-        image_binary = self.__class__.__convert_to_binary_image(image_text)
+        image_binary = self.__class__.convert_to_binary_image(image_text)
 
         # delete the image that are smaller to see the number
         noise = morphology.remove_small_objects(image_binary, 14)
@@ -103,7 +102,7 @@ class CorrelationsOCR(object):
         labels = morphology.label(noise, connectivity=noise.ndim)
 
         # sort according to row and column
-        image_props_sort = self.__class__.__regionprops_sort(labels)
+        image_props_sort = self.__class__.regionprops_sort(labels)
 
         # read text latter by latter
         text = self.__read_image_later_by_latter(image_props_sort, labels)
@@ -139,12 +138,11 @@ class CorrelationsOCR(object):
                 # write text
                 add_interval = self.__class__.__word_or_new_row(image_props_sort[row], col)
                 text = text + selected_label[0] + add_interval
-                print(text)
 
         return text
 
     @staticmethod
-    def __convert_to_binary_image(image_text: np.array) -> np.array:
+    def convert_to_binary_image(image_text: np.array) -> np.array:
 
         # convert to gray image
         image_gray = color.rgb2gray(image_text)
@@ -155,7 +153,7 @@ class CorrelationsOCR(object):
         return binary_image
 
     @staticmethod
-    def __regionprops_sort(labels)->dict:
+    def regionprops_sort(labels)->dict:
 
         image_props = measure.regionprops(labels)
         blob = dict()

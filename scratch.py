@@ -111,10 +111,10 @@ for row in range(number_rows):
                 correlation_dictionary[latter].append(cor_value)
 
             score_list = correlation_dictionary[latter]
-            correlation_score[latter] = np.max(score_list)
+            correlation_score[latter] = np.nanmax(score_list)
 
         # the key with the higiest score it is the most sutable label
-        higiest_score = np.max(list(correlation_score.values()))
+        higiest_score = np.nanmax(list(correlation_score.values()))
         selected_label = [latter for latter, score in correlation_score.items() if score == higiest_score]
 
         # write text
