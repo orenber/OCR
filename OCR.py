@@ -29,11 +29,12 @@ class CorrelationsOCR(object):
     def load_dictionary(self, dictionary: dict)->None:
 
         self.ocr_dict = dictionary
+        pass
 
     def update_dictionary(self, label: str, image_ocr: np.array)->None:
 
         # check if their is such a label
-        label_in = self.lable_image(image_ocr)
+        label_in = self.label_image(image_ocr)
 
         if label == label_in:
             return
@@ -55,10 +56,20 @@ class CorrelationsOCR(object):
                 # create new field
                 self.ocr_dict.update({latter: [image_ocr]})
 
+    def save_dictionary(self,dictionary_name:str)->None:
+        Ut.save(dictionary_name, self.ocr_dict)
+        pass
+
+    def reset_dictionary(self):
+        self.ocr_dict = {}
+        pass
+
     def label_image(self, image_ocr: np.array)->str:
 
         # load dictionary
         dictionary_images = self.ocr_dict
+        if not dictionary_images:
+            return ''
 
         # if the dictionary is empty create new one
         latter_list = list(dictionary_images.keys())
@@ -73,11 +84,13 @@ class CorrelationsOCR(object):
             for k in range(numbers_images):
 
                 # resize input image to the dictionary image
-                image_char = images_list[k]
-                image_resided = resize(image_char, (image_ocr.shape[0], image_ocr.shape[1]))
+                image_memory = images_list[k]
 
+                image_resize = resize(image_memory , (image_ocr.shape[0], image_ocr.shape[1]))
+
+                image_resize_logical = image_resize
                 # find the max correlation on every image in the dictionary
-                cor_value = Ut.corr2(image_resided, image_ocr)
+                cor_value = Ut.corr2(image_resize_logical, image_ocr)
 
                 correlation_dictionary[latter].append(cor_value)
 

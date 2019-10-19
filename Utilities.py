@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import pickle
+from skimage import morphology, measure
 
 
 def yes_or_no(question: str)->bool:
@@ -17,14 +18,14 @@ def yes_or_no(question: str)->bool:
 
 # obj0, obj1, obj2 are created here...
 def save(filename, objects):
-    file = filename + '.pkl'
+    file = filename
 # Saving the objects:
     with open(file, 'wb') as f:  # Python 3: open(..., 'wb')
         pickle.dump(objects, f)
 
 
 def load(filename):
-    file = filename + '.pkl'
+    file = filename
     # Getting back the objects:
     with open(file, 'rb') as f:  # Python 3: open(..., 'rb')
 
@@ -116,7 +117,43 @@ def word_or_new_row(sentence_row, col)->str:
     return state
 
 
+def blob_select(binary_image: np.array, x = np.nan ,y = np.nan)-> dict:
 
+    # get the current axes click mouse crusor
+    blob_crop = np.zeros([10, 10],dtype=np.bool)
+    ROI = np.nan * np.ones(shape=(1, 4))[0]
+    point_select = [y, x]
+    point_round = list(map(round, point_select))
+    point = list(map(int, point_round))
+    is_hit_blob = binary_image[point[0]][point[1]]
+    if is_hit_blob:
+        label_image = morphology.label(binary_image)
+        props = measure.regionprops(label_image)
+
+        number_blobs = len(props)
+        # create zeros image
+        word = np.zeros([binary_image.shape[0], binary_image.shape[1]], dtype=np.bool)
+
+        for n in range(number_blobs):
+
+            matrix_length = props[n].coords.shape[0]
+            point_matrix = np.kron(np.ones((matrix_length, 1)), point)
+            search_matrix = np.sum(np.abs(props[n].coords - point_matrix), 1)
+            index_array = search_matrix == 0
+            find_blob = any(x == True for x in index_array)
+
+            if find_blob:
+                coordinator = props[n].coords
+                word[coordinator[:, 0], coordinator[:, 1]] = True
+                ROI = props[n].bbox
+                blob_crop = crop_image(word, ROI)
+                break
+
+    select = dict()
+    select['blob'] = blob_crop
+    select['ROI'] = convert_rectangle(ROI)
+
+    return select
 
 
 
