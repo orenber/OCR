@@ -1,12 +1,14 @@
 
 import math
-import numpy as np
 import os
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.patches import Rectangle
 from skimage import color, morphology, measure
 from skimage.transform import resize
-import Utilities as Ut
+
+from Algo import Utilities as Ut
 
 # Create figure and axes
 fig = plt.figure(frameon=False,figsize=(12,8))
@@ -22,7 +24,7 @@ text_in_axes = ax_text.text(0, 0, '', style='italic', fontsize=10,
         verticalalignment='top',bbox={ 'boxstyle': 'round', 'facecolor': 'wheat'})
 ax_text.invert_yaxis()
 # read image
-images_path = os.path.abspath(os.path.join(os.pardir, 'OCR', 'Resource', 'images'))
+images_path = os.path.abspath(os.path.join(os.pardir, 'Resource', 'images'))
 image_papare = os.path.join(images_path, 'TheVelveteenRabbit.jpg')
 image_ocr = plt.imread(image_papare)
 ax_image.imshow(image_ocr)
@@ -54,7 +56,9 @@ answer = list()
 test_score_list = list()
 number_rows = len(image_props_sort)
 text = ''
-dictionary_images = Ut.load('dictionary_images')
+folder = os.path.abspath(os.path.join(os.pardir, 'Resource', 'ocr_dictionary'))
+file_ocr = os.path.join(folder, 'dictionary_images.pkl')
+dictionary_images = Ut.load(file_ocr)
 # loop on every row
 for row in range(number_rows):
     number_columns = len(image_props_sort[row])

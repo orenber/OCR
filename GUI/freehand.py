@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from  Utilities import  blob_select
-from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QApplication
 from matplotlib.patches import Rectangle
+
+from Algo.Utilities import blob_select
+
 
 class AxesEvent:
 
@@ -21,32 +23,31 @@ class AxesEvent:
                          'leave_axes': ''}
 
     def connect(self):
-        'connect to all the events we need'
+        # connect to all the events we need
         self.cidpress = self.figure.canvas.mpl_connect(
-            'button_press_event', self.on_press )
+            'button_press_event', self.on_press)
         self.enter_axes = self.figure.canvas.mpl_connect(
-            'axes_enter_event', self.enter_axes )
+            'axes_enter_event', self.enter_axes)
         self.leave_axes = self.figure.canvas.mpl_connect(
-            'axes_leave_event', self.leave_axes )
+            'axes_leave_event', self.leave_axes)
 
     def mouse_motion(self, state: bool = False):
         if state:
             self.cidrelease = self.figure.canvas.mpl_connect(
-                'button_release_event', self.on_release )
+                'button_release_event', self.on_release)
             self.cidmotion = self.figure.canvas.mpl_connect(
-                'motion_notify_event', self.on_motion )
+                'motion_notify_event', self.on_motion)
             self.scroll = self.figure.canvas.mpl_connect(
-                'scroll_event', self.on_scroll )
+                'scroll_event', self.on_scroll)
         elif state == False:
-            self.figure.canvas.mpl_disconnect( self.cidrelease )
-            self.figure.canvas.mpl_disconnect( self.cidmotion )
-            self.figure.canvas.mpl_disconnect( self.scroll )
+            self.figure.canvas.mpl_disconnect(self.cidrelease)
+            self.figure.canvas.mpl_disconnect(self.cidmotion)
+            self.figure.canvas.mpl_disconnect(self.scroll)
 
     def on_press(self, event):
-        'on button press we will see if the mouse is over us and store some data'
+        # on button press we will see if the mouse is over us and store some data
         if self.__in_axes and id(self.ax) == id(event.inaxes):
             self.mouse_motion(True)
-
 
             callback = self.callback['on_press']
             if callable(callback):
@@ -54,31 +55,27 @@ class AxesEvent:
 
             pass
 
-
     def on_scroll(self, event):
 
         callback = self.callback['on_scroll']
         if callable(callback):
             callback(event)
 
-
-
     def on_motion(self, event):
 
-        if self.__in_axes and id( self.ax ) == id( event.inaxes ):
+        if self.__in_axes and id(self.ax) == id(event.inaxes):
 
             callback = self.callback['on_motion']
             if callable(callback):
                 callback(event)
 
-
         pass
 
     def on_release(self, event):
         self.__in_axes = True
-        if id( self.ax ) == id( event.inaxes ):
+        if id(self.ax) == id(event.inaxes):
 
-            self.mouse_motion( False )
+            self.mouse_motion(False)
 
             callback = self.callback['on_release']
             if callable(callback):
@@ -87,9 +84,9 @@ class AxesEvent:
 
     def enter_axes(self, event):
 
-        QApplication.setOverrideCursor( QCursor( Qt.ArrowCursor ) )
+        QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
         self.__in_axes = True
-        if id( self.ax) == id( event.inaxes ):
+        if id(self.ax) == id(event.inaxes):
 
             callback = self.callback['enter_axes']
             if callable(callback):
@@ -109,9 +106,9 @@ class AxesEvent:
         pass
 
     def disconnect(self):
-        self.figure.canvas.mpl_disconnect( self.cidpress )
-        self.figure.canvas.mpl_disconnect( self.cidrelease )
-        self.figure.canvas.mpl_disconnect( self.cidmotion )
+        self.figure.canvas.mpl_disconnect(self.cidpress)
+        self.figure.canvas.mpl_disconnect(self.cidrelease)
+        self.figure.canvas.mpl_disconnect(self.cidmotion)
 
 
 class BoardFreeHand:
@@ -139,9 +136,9 @@ class BoardFreeHand:
         self.__draw = state
 
         if self.__draw:
-            self.mouse_motion( True )
+            self.mouse_motion(True)
         else:
-            self.mouse_motion( False )
+            self.mouse_motion(False)
 
     @property
     def erse_size(self) -> int:
@@ -155,38 +152,37 @@ class BoardFreeHand:
             self.__erse_size = size
 
     def connect(self):
-        'connect to all the events we need'
+        # connect to all the events we need
         self.cidpress = self.figure.canvas.mpl_connect(
-            'button_press_event', self.on_press )
+            'button_press_event', self.on_press)
 
         self.enter_axes = self.figure.canvas.mpl_connect(
-            'axes_enter_event', self.enter_axes )
+            'axes_enter_event', self.enter_axes)
         self.leave_axes = self.figure.canvas.mpl_connect(
-            'axes_leave_event', self.leave_axes )
+            'axes_leave_event', self.leave_axes)
 
     def mouse_motion(self, state: bool = False):
         if state:
             self.cidrelease = self.figure.canvas.mpl_connect(
-                'button_release_event', self.on_release )
+                'button_release_event', self.on_release)
             self.cidmotion = self.figure.canvas.mpl_connect(
-                'motion_notify_event', self.on_motion )
+                'motion_notify_event', self.on_motion)
             self.scroll = self.figure.canvas.mpl_connect(
-                'scroll_event', self.on_scroll )
+                'scroll_event', self.on_scroll)
         elif state == False:
-            self.figure.canvas.mpl_disconnect( self.cidrelease )
-            self.figure.canvas.mpl_disconnect( self.cidmotion )
-            self.figure.canvas.mpl_disconnect( self.scroll )
+            self.figure.canvas.mpl_disconnect(self.cidrelease)
+            self.figure.canvas.mpl_disconnect(self.cidmotion)
+            self.figure.canvas.mpl_disconnect(self.scroll)
 
     def on_press(self, event):
-        'on button press we will see if the mouse is over us and store some data'
+        # on button press we will see if the mouse is over us and store some data
         if self.__in_axes and id(self.ax) == id(event.inaxes):
             self.draw = True
-
 
     def on_scroll(self, event):
 
         scroll_direction = event.button
-        print( 'scroll dirction' + scroll_direction )
+        print('scroll dirction' + scroll_direction)
         if scroll_direction == 'down':
             self.erse_size -= 1
             pass
@@ -198,28 +194,27 @@ class BoardFreeHand:
 
     def on_motion(self, event):
 
-        if self.__in_axes == True:
+        if self.__in_axes:
+
             if event.button == 1:
-                self.draw_on( event.xdata, event.ydata, self.penColor )
+                self.draw_on( event.xdata, event.ydata, self.penColor)
                 pass
             elif event.button == 3:
-                self.draw_on( event.xdata, event.ydata, self.erse_color, self.erse_size )
+                self.draw_on(event.xdata, event.ydata, self.erse_color, self.erse_size)
                 pass
 
-    def draw_on(self, x0: float, y0: float, drawcolor='black', size=1):
+    def draw_on(self, x0: float, y0: float, draw_color='black', size=1):
 
-        #LIFO
+        # LIFO
         self._xdata.append(x0)
         self._ydata.append(y0)
-        if len(self._xdata)>2:
+        if len(self._xdata) > 2:
             self._xdata.pop(0)
             self._ydata.pop(0)
 
-        line = self.ax.plot(self._xdata, self._ydata, color=drawcolor, linewidth=size )
+        self.ax.plot(self._xdata, self._ydata, color=draw_color, linewidth=size)
 
         self.figure.canvas.draw()
-
-
 
         pass
 
@@ -238,46 +233,43 @@ class BoardFreeHand:
         QApplication.restoreOverrideCursor()
 
     def disconnect(self):
-        self.figure.canvas.mpl_disconnect( self.cidpress )
-        self.figure.canvas.mpl_disconnect( self.cidrelease )
-        self.figure.canvas.mpl_disconnect( self.cidmotion )
+        self.figure.canvas.mpl_disconnect(self.cidpress)
+        self.figure.canvas.mpl_disconnect(self.cidrelease)
+        self.figure.canvas.mpl_disconnect(self.cidmotion)
         if self.draw:
-            self.mouse_motion( False )
+            self.mouse_motion(False)
 
 
 class BoaredImage(BoardFreeHand):
 
-    def __init__(self,*args, **kwargs):
-        super().__init__( *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.image_size = [45, 45]
         self.image = self.st()
 
     def create_binary_image(self):
-        black_image = np.zeros( [self.image_size[0], self.image_size[0]], dtype=np.bool )
+
+        black_image = np.zeros([self.image_size[0], self.image_size[0]], dtype=np.bool)
         self.ax.cla()
         self.ax.imshow( black_image, cmap=plt.cm.gray)
         return black_image
 
     def draw_on(self, x0: int, y0: int, drawcolor='black', size=1):
-        self.image[int( y0 ), int( x0 )] = True
+
+        self.image[int(y0), int(x0)] = True
         self.ax.cla()
-        self.ax.imshow( self.image, cmap=plt.cm.gray )
+        self.ax.imshow(self.image, cmap=plt.cm.gray)
         self.figure.canvas.draw()
-
-
-
-
-
 
 
 class AxesSelectBlobImage(BoardFreeHand):
 
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.binary_image = []
         self.rectangle = Rectangle((np.nan, np.nan), np.nan, np.nan,
-                                    linewidth=1, edgecolor='g', facecolor='none' )
-        self.ax.add_patch( self.rectangle )
+                                   linewidth=1, edgecolor='g', facecolor='none')
+        self.ax.add_patch(self.rectangle)
         # protected
         self._command = []
 
@@ -316,9 +308,10 @@ class AxesSelectBlobImage(BoardFreeHand):
 
 
 def main():
-    fig = plt.figure()
-    ax1 = AxesEvent([0.1,0.1,0.4,0.8])
-    ax2 = AxesEvent([0.55,0.1,0.4,0.8])
+
+    plt.figure()
+    ax1 = AxesEvent([0.1, 0.1, 0.4, 0.8])
+    ax2 = AxesEvent([0.55, 0.1, 0.4, 0.8])
 
     ax1.connect()
     ax2.connect()

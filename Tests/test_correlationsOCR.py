@@ -1,20 +1,25 @@
-from unittest import TestCase
-from OCR import CorrelationsOCR
-import numpy as np
 import os
+from unittest import TestCase
+
 import matplotlib.pyplot as plt
-import Utilities as Ut
+import numpy as np
 from skimage import morphology
+
+from Algo import Utilities as Ut
+from Algo.OCR import CorrelationsOCR
 
 
 class TestCorrelationsOCR( TestCase ):
 
     def test_load_dictionary(self):
         # load file
-        dictionary_images = Ut.load( 'dictionary_images.pkl' )
+        folder = os.path.abspath(os.path.join( os.pardir, 'Resource', 'ocr_dictionary'))
+        file_ocr = os.path.join(folder, 'dictionary_images.pkl')
+        dictionary_images = Ut.load(file_ocr)
+
         # load dictionary
         ocr = CorrelationsOCR()
-        ocr.load_dictionary( dictionary_images )
+        ocr.load_dictionary(dictionary_images)
 
         pass
 
@@ -32,7 +37,7 @@ class TestCorrelationsOCR( TestCase ):
 
     def test_read_text_image(self):
         # load dictionary file
-        dictionary_images = Ut.load( 'dictionary_images.pkl' )
+        dictionary_images = Ut.load('dictionary_images.pkl')
         # load dictionary
         ocr = CorrelationsOCR( dictionary_images )
         # read image
@@ -68,9 +73,9 @@ class TestCorrelationsOCR( TestCase ):
 
 def read_image(image_file: str) -> np.array:
     # read image
-    images_path = os.path.abspath( os.path.join( os.pardir, 'OCR', 'Resource', 'images' ) )
-    image_papare = os.path.join( images_path, image_file )
-    image_ocr = plt.imread( image_papare )
+    images_path = os.path.abspath(os.path.join(os.pardir, 'Resource', 'images'))
+    image_papare = os.path.join(images_path, image_file)
+    image_ocr = plt.imread(image_papare)
     return image_ocr
 
 

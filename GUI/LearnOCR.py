@@ -1,12 +1,14 @@
-from OCR import CorrelationsOCR
-import numpy as np
 import os
+from tkinter import filedialog, simpledialog
+
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
+import numpy as np
 from matplotlib.patches import Rectangle
-import Utilities as Ut
-from tkinter import filedialog,simpledialog
-from freehand import AxesEvent
+from matplotlib.widgets import Button
+
+from Algo import Utilities as Ut
+from Algo.OCR import CorrelationsOCR
+from GUI.freehand import AxesEvent
 
 
 class School(object):

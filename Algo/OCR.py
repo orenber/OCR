@@ -1,8 +1,10 @@
-from skimage import color, morphology, measure
-import numpy as np
-from skimage.transform import resize
-import Utilities as Ut
 import math
+
+import numpy as np
+from skimage import color, morphology, measure
+from skimage.transform import resize
+
+from Algo import Utilities as Ut
 
 
 class SmartOCR:
